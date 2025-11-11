@@ -1,0 +1,69 @@
+:root {
+  --nhm-blue: #0C2340;
+  --nhm-orange: #FBB040;
+  --nhm-bg: #F8F9FA;
+  --nhm-card: #FFFFFF;
+  --nhm-border: #E5E7EB;
+  --nhm-text: #1C1C1C;
+  --nhm-muted: #4F4F4F;
+  --nhm-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.theme-nhm {
+  --nhm-blue: #0C2340;
+  --nhm-orange: #FBB040;
+  --nhm-bg: #F8F9FA;
+  --nhm-card: #FFFFFF;
+  --nhm-border: #E5E7EB;
+  --nhm-text: #1C1C1C;
+  --nhm-muted: #4F4F4F;
+  --nhm-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.nhm-card {
+  background-color: var(--nhm-card);
+  border: 1px solid var(--nhm-border);
+  box-shadow: var(--nhm-shadow);
+  color: var(--nhm-text);
+}
+
+.nhm-text {
+  color: var(--nhm-text);
+}
+
+.nhm-muted {
+  color: var(--nhm-muted);
+}
+
+.nhm-accent {
+  color: var(--nhm-orange);
+}
+
+.nhm-accent-bg {
+  background-color: var(--nhm-orange);
+  color: var(--nhm-card);
+}
+
+.nhm-input {
+  background-color: var(--nhm-card);
+  border: 1px solid var(--nhm-border);
+  color: var(--nhm-text);
+}
+
+.nhm-input:focus {
+  border-color: var(--nhm-orange);
+  outline: 2px solid var(--nhm-orange);
+  outline-offset: 2px;
+}
+
+.nhm-btn {
+  background-color: var(--nhm-orange);
+  border: 1px solid var(--nhm-orange);
+  color: var(--nhm-card);
+}
+
+.nhm-btn:hover {
+  background-color: var(--nhm-blue);
+  border-color: var(--nhm-blue);
+  color: var(--nhm-card);
+}
