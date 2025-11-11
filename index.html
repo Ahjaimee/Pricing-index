@@ -40,11 +40,11 @@
       --surface-alt: #f3f5f8;
       --surface-emphasis: #e8ecf4;
       --border: var(--nhm-border);
-      --accent: linear-gradient(135deg, var(--nhm-orange), #ffcf66);
+      --accent: linear-gradient(135deg, var(--nhm-orange), var(--nhm-orange));
       --accent-strong: var(--nhm-blue);
       --text-primary: var(--nhm-text);
-      --text-secondary: #35465d;
-      --text-muted: var(--nhm-muted);
+      --text-secondary: var(--nhm-blue);
+      --text-muted: var(--nhm-blue);
       --text-accent: var(--nhm-blue);
       --radius-lg: 18px;
       --radius-md: 12px;
@@ -212,7 +212,7 @@
       display: flex;
       justify-content: space-between;
       font-size: 0.95rem;
-      color: #d7deed;
+      color: var(--nhm-blue);
       gap: 12px;
     }
     #cogvis-estimator .summary-line .label {
