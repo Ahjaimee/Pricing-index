@@ -264,17 +264,6 @@
       font-weight: 600;
       color: var(--text-primary);
     }
-    #cogvis-estimator .vat-toggle {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 0.95rem;
-      color: var(--text-secondary);
-    }
-    #cogvis-estimator .vat-toggle input {
-      width: 18px;
-      height: 18px;
-    }
     #cogvis-estimator .actions {
       display: grid;
       gap: 10px;
@@ -419,28 +408,20 @@
         </button>
       </div>
       <div class="tier-indicator" data-tier-indicator></div>
-      <label class="vat-toggle">
-        <input type="checkbox" id="vat-toggle" checked>
-        <span>Include VAT (20%)</span>
-      </label>
       <div class="summary-list" id="summary-lines"></div>
       <div class="summary-line" data-summary-subtotal>
         <div class="label">Subtotal</div>
         <strong></strong>
       </div>
-      <div class="summary-line" data-summary-vat style="display: none;">
-        <div class="label">VAT (20%)</div>
-        <strong></strong>
-      </div>
       <div class="summary-line total-line" data-summary-total>
-        <div class="label">Estimated total</div>
+        <div class="label">Estimated total (excl. VAT)</div>
         <strong></strong>
       </div>
       <div class="actions">
         <a class="primary" data-booking-link href="#">Book a site survey</a>
         <a class="secondary" data-email-link href="#">Email me this estimate</a>
       </div>
-      <div class="disclaimer">Estimates are for guidance only and subject to site survey. Docking station quantities may vary by layout and power availability.</div>
+      <div class="disclaimer">Estimates are for guidance only and subject to site survey. Prices exclude VAT. Docking station quantities may vary by layout and power availability.</div>
     </div>
   </div>
   <script src="sensor-image.js"></script>
@@ -451,7 +432,6 @@
       if (!root) return;
 
       const BOOKING_URL = 'https://example.com/book';
-      const VAT_RATE = 0.2;
       const MAX_SENSORS = 200;
       const MAX_DOCKERS = 450;
       const DOCKERS_PER_SENSOR = 2.5;
@@ -476,16 +456,14 @@
       const summaryLinesContainer = root.querySelector('#summary-lines');
       const tierIndicator = root.querySelector('[data-tier-indicator]');
       const subtotalEl = root.querySelector('[data-summary-subtotal] strong');
-      const vatRow = root.querySelector('[data-summary-vat]');
-      const vatValueEl = vatRow.querySelector('strong');
       const totalEl = root.querySelector('[data-summary-total] strong');
-      const vatToggle = root.querySelector('#vat-toggle');
       const bookingLink = root.querySelector('[data-booking-link]');
       const emailLink = root.querySelector('[data-email-link]');
       const tierSelector = root.querySelector('[data-tier-selector]');
       const tierButtons = tierSelector ? Array.from(tierSelector.querySelectorAll('[data-tier-button]')) : [];
       const dockerHelper = root.querySelector('[data-docker-helper]');
 
+      let sensorInput = null;
       let dockerInput = null;
       let softwareInput = null;
 
@@ -557,6 +535,20 @@
         updateDockerHelperText(recommended);
       }
 
+      function adjustSensorsForTier(tier) {
+        if (!tier) return;
+        const maxForTier = Number.isFinite(tier.max) ? tier.max : MAX_SENSORS;
+        const base = state.sensor || tier.min;
+        const adjusted = Math.min(Math.max(base, tier.min), maxForTier);
+        if (adjusted !== state.sensor) {
+          state.sensor = adjusted;
+          if (sensorInput) {
+            sensorInput.value = state.sensor;
+          }
+        }
+        handleSensorDependencies();
+      }
+
       function getUnitPrice(productId, tier) {
         return tier.prices[productId] || 0;
       }
@@ -616,28 +608,17 @@
           return sum + state[product.id] * unitPrice;
         }, 0);
 
-        const vatIncluded = vatToggle.checked;
-        const vatAmount = vatIncluded ? subtotal * VAT_RATE : 0;
-        const total = subtotal + vatAmount;
+        const total = subtotal;
 
         subtotalEl.textContent = money(subtotal);
-        if (vatIncluded) {
-          vatRow.style.display = 'flex';
-          vatValueEl.textContent = money(vatAmount);
-        } else {
-          vatRow.style.display = 'none';
-          vatValueEl.textContent = money(0);
-        }
         totalEl.textContent = money(total);
 
         const itemsParam = `sensor:${state.sensor},docker:${state.docker},software:${state.software}`;
-        const vatParam = vatIncluded ? '1' : '0';
-        bookingLink.href = `${BOOKING_URL}?vat=${vatParam}&items=${encodeURIComponent(itemsParam)}`;
+        bookingLink.href = `${BOOKING_URL}?items=${encodeURIComponent(itemsParam)}`;
 
         const emailSubject = encodeURIComponent('Cogvis AI – Quick Price Estimate');
         const bodyLines = [
           `Tier: ${tierDisplayName(tier)}`,
-          `VAT included: ${vatIncluded ? 'Yes' : 'No'}`,
           '',
           ...products.map(product => {
             const unitPrice = getUnitPrice(product.id, tier);
@@ -646,12 +627,9 @@
             return `${product.name}: ${qty} x ${money(unitPrice)} = ${money(lineTotal)}`;
           }),
           '',
-          `Subtotal: ${money(subtotal)}`
+          `Subtotal (excl. VAT): ${money(subtotal)}`,
+          `Estimated total (excl. VAT): ${money(total)}`
         ];
-        if (vatIncluded) {
-          bodyLines.push(`VAT (20%): ${money(vatAmount)}`);
-        }
-        bodyLines.push(`Estimated total: ${money(total)}`);
         const emailBody = encodeURIComponent(bodyLines.join('\n'));
         emailLink.href = `mailto:?subject=${emailSubject}&body=${emailBody}`;
       }
@@ -662,10 +640,14 @@
             const target = button.getAttribute('data-tier-button');
             if (target === 'auto') {
               selectedTierId = 'auto';
-            } else if (findTierById(target)) {
-              selectedTierId = target;
             } else {
-              selectedTierId = 'auto';
+              const tier = findTierById(target);
+              if (tier) {
+                selectedTierId = target;
+                adjustSensorsForTier(tier);
+              } else {
+                selectedTierId = 'auto';
+              }
             }
             updatePricing();
           });
@@ -699,6 +681,7 @@
         };
 
         if (productId === 'sensor') {
+          sensorInput = input;
           const sync = () => {
             state.sensor = clampQuantity(input.value, MAX_SENSORS);
             input.value = state.sensor;
@@ -743,8 +726,6 @@
           input.addEventListener('input', filterNumericInput);
         }
       });
-
-      vatToggle.addEventListener('change', updatePricing);
 
       handleSensorDependencies();
       updatePricing();
