@@ -171,6 +171,35 @@
       border-radius: 999px;
       background: var(--accent);
     }
+    #cogvis-estimator .tier-selector {
+      display: grid;
+      gap: 8px;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    }
+    #cogvis-estimator .tier-selector button {
+      border: 1px solid rgba(12, 35, 64, 0.18);
+      border-radius: var(--radius-md);
+      padding: 10px 12px;
+      background: var(--surface-alt);
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-size: 0.85rem;
+      display: grid;
+      gap: 4px;
+      cursor: pointer;
+      transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
+    }
+    #cogvis-estimator .tier-selector button small {
+      font-weight: 500;
+      font-size: 0.7rem;
+      opacity: 0.8;
+    }
+    #cogvis-estimator .tier-selector button.is-active {
+      background: var(--accent);
+      border-color: rgba(251, 176, 64, 0.55);
+      color: #0c2340;
+      box-shadow: 0 10px 25px rgba(251, 176, 64, 0.28);
+    }
     #cogvis-estimator .summary-list {
       display: grid;
       gap: 12px;
@@ -248,6 +277,22 @@
       font-size: 0.85rem;
       color: var(--text-secondary);
     }
+    #cogvis-estimator .product-helper {
+      font-size: 0.78rem;
+      color: rgba(12, 35, 64, 0.75);
+    }
+    #cogvis-estimator .product-helper strong {
+      font-weight: 600;
+      color: var(--accent-strong);
+    }
+    #cogvis-estimator .stepper button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    #cogvis-estimator .stepper input[readonly] {
+      cursor: default;
+      color: var(--text-secondary);
+    }
     @media (max-width: 900px) {
       #cogvis-estimator {
         padding: 20px;
@@ -270,7 +315,7 @@
   <div class="estimator-layout">
     <div class="products">
       <div class="product-card" data-product-id="sensor">
-        <img data-sensor-image src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="Cogvis fall detection sensor mounted on ceiling">
+        <img data-sensor-image src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="Cogvis fall detection sensor">
         <div class="product-content">
           <div class="product-header">
             <div class="product-name">Sensor (standard variants)</div>
@@ -285,7 +330,7 @@
         </div>
       </div>
       <div class="product-card" data-product-id="docker">
-        <img src="https://placehold.co/600x400?text=Sensor+Docker" alt="Sensor Docker placeholder image">
+        <img src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20320%20220%22%3E%0A%20%20%3Cdefs%3E%0A%20%20%20%20%3ClinearGradient%20id%3D%22panel%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%230c2340%22%20stop-opacity%3D%220.08%22%20/%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23fbb040%22%20stop-opacity%3D%220.12%22%20/%3E%0A%20%20%20%20%3C/linearGradient%3E%0A%20%20%3C/defs%3E%0A%20%20%3Crect%20width%3D%22320%22%20height%3D%22220%22%20rx%3D%2224%22%20fill%3D%22%23f5f7fb%22%20/%3E%0A%20%20%3Crect%20x%3D%2228%22%20y%3D%2236%22%20width%3D%22264%22%20height%3D%22148%22%20rx%3D%2220%22%20fill%3D%22url%28%23panel%29%22%20stroke%3D%22%239db4d5%22%20stroke-width%3D%224%22%20/%3E%0A%20%20%3Cg%20fill%3D%22%230c2340%22%20opacity%3D%220.8%22%3E%0A%20%20%20%20%3Crect%20x%3D%2264%22%20y%3D%2270%22%20width%3D%2256%22%20height%3D%2280%22%20rx%3D%2210%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%230c2340%22%20stroke-width%3D%224%22%20/%3E%0A%20%20%20%20%3Ccircle%20cx%3D%2292%22%20cy%3D%2298%22%20r%3D%2212%22%20fill%3D%22%23fbb040%22%20/%3E%0A%20%20%20%20%3Crect%20x%3D%22100%22%20y%3D%22124%22%20width%3D%2212%22%20height%3D%2218%22%20rx%3D%224%22%20fill%3D%22%230c2340%22%20/%3E%0A%20%20%3C/g%3E%0A%20%20%3Cg%20fill%3D%22%230c2340%22%20opacity%3D%220.7%22%3E%0A%20%20%20%20%3Crect%20x%3D%22136%22%20y%3D%2270%22%20width%3D%2256%22%20height%3D%2280%22%20rx%3D%2210%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%230c2340%22%20stroke-width%3D%224%22%20/%3E%0A%20%20%20%20%3Ccircle%20cx%3D%22164%22%20cy%3D%2298%22%20r%3D%2212%22%20fill%3D%22%237dc2ff%22%20/%3E%0A%20%20%20%20%3Crect%20x%3D%22172%22%20y%3D%22124%22%20width%3D%2212%22%20height%3D%2218%22%20rx%3D%224%22%20fill%3D%22%230c2340%22%20/%3E%0A%20%20%3C/g%3E%0A%20%20%3Cg%20fill%3D%22%230c2340%22%20opacity%3D%220.6%22%3E%0A%20%20%20%20%3Crect%20x%3D%22208%22%20y%3D%2270%22%20width%3D%2256%22%20height%3D%2280%22%20rx%3D%2210%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%230c2340%22%20stroke-width%3D%224%22%20/%3E%0A%20%20%20%20%3Ccircle%20cx%3D%22236%22%20cy%3D%2298%22%20r%3D%2212%22%20fill%3D%22%23fbb040%22%20/%3E%0A%20%20%20%20%3Crect%20x%3D%22244%22%20y%3D%22124%22%20width%3D%2212%22%20height%3D%2218%22%20rx%3D%224%22%20fill%3D%22%230c2340%22%20/%3E%0A%20%20%3C/g%3E%0A%20%20%3Cpath%20d%3D%22M64%20164h200%22%20stroke%3D%22%230c2340%22%20stroke-width%3D%226%22%20stroke-linecap%3D%22round%22%20stroke-dasharray%3D%2216%2018%22%20opacity%3D%220.5%22%20/%3E%0A%3C/svg%3E" alt="Sensor docking station illustration">
         <div class="product-content">
           <div class="product-header">
             <div class="product-name">Sensor Docker</div>
@@ -297,10 +342,11 @@
             <input type="number" inputmode="numeric" min="0" step="1" value="0" aria-label="Sensor Docker quantity input">
             <button type="button" class="increment" aria-label="Increase Sensor Docker quantity">+</button>
           </div>
+          <div class="product-helper" data-docker-helper>Recommended: 0 docking stations</div>
         </div>
       </div>
       <div class="product-card" data-product-id="software">
-        <img src="https://placehold.co/600x400?text=Nursing+Home+Software" alt="Nursing Home Software placeholder image">
+        <img src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20320%20220%22%3E%0A%20%20%3Cdefs%3E%0A%20%20%20%20%3ClinearGradient%20id%3D%22screen%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%237dc2ff%22%20stop-opacity%3D%220.18%22%20/%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23fbb040%22%20stop-opacity%3D%220.18%22%20/%3E%0A%20%20%20%20%3C/linearGradient%3E%0A%20%20%3C/defs%3E%0A%20%20%3Crect%20width%3D%22320%22%20height%3D%22220%22%20rx%3D%2224%22%20fill%3D%22%23f6f8fb%22%20/%3E%0A%20%20%3Crect%20x%3D%2236%22%20y%3D%2242%22%20width%3D%22248%22%20height%3D%22150%22%20rx%3D%2218%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23c7d6ec%22%20stroke-width%3D%224%22%20/%3E%0A%20%20%3Crect%20x%3D%2252%22%20y%3D%2258%22%20width%3D%22216%22%20height%3D%22118%22%20rx%3D%2214%22%20fill%3D%22url%28%23screen%29%22%20/%3E%0A%20%20%3Cg%20stroke%3D%22%230c2340%22%20stroke-width%3D%226%22%20stroke-linecap%3D%22round%22%20fill%3D%22none%22%3E%0A%20%20%20%20%3Cpath%20d%3D%22M76%20136c24-30%2046-30%2070%200%2024%2030%2048%2030%2072%200%22%20opacity%3D%220.7%22%20/%3E%0A%20%20%20%20%3Cpath%20d%3D%22M108%20112c12-16%2024-16%2036%200%2012%2016%2024%2016%2036%200%22%20opacity%3D%220.55%22%20/%3E%0A%20%20%3C/g%3E%0A%20%20%3Ccircle%20cx%3D%22116%22%20cy%3D%2296%22%20r%3D%2210%22%20fill%3D%22%230c2340%22%20opacity%3D%220.75%22%20/%3E%0A%20%20%3Ccircle%20cx%3D%22160%22%20cy%3D%2296%22%20r%3D%2210%22%20fill%3D%22%23fbb040%22%20opacity%3D%220.8%22%20/%3E%0A%20%20%3Ccircle%20cx%3D%22204%22%20cy%3D%2296%22%20r%3D%2210%22%20fill%3D%22%230c2340%22%20opacity%3D%220.6%22%20/%3E%0A%20%20%3Cpath%20d%3D%22M104%20180h112%22%20stroke%3D%22%230c2340%22%20stroke-width%3D%228%22%20stroke-linecap%3D%22round%22%20opacity%3D%220.35%22%20/%3E%0A%3C/svg%3E" alt="Nursing home software illustration">
         <div class="product-content">
           <div class="product-header">
             <div class="product-name">Nursing Home Software (1 Year)</div>
@@ -309,7 +355,7 @@
           </div>
           <div class="stepper" role="group" aria-label="Nursing Home Software quantity selector">
             <button type="button" class="decrement" aria-label="Decrease Nursing Home Software quantity">-</button>
-            <input type="number" inputmode="numeric" min="0" step="1" value="0" aria-label="Nursing Home Software quantity input">
+            <input type="number" inputmode="numeric" min="0" step="1" value="0" aria-label="Nursing Home Software quantity input" readonly>
             <button type="button" class="increment" aria-label="Increase Nursing Home Software quantity">+</button>
           </div>
         </div>
@@ -317,6 +363,28 @@
     </div>
     <div class="summary-card">
       <h2>Quick Price Estimator</h2>
+      <div class="tier-selector" data-tier-selector role="group" aria-label="Pricing tier selection">
+        <button type="button" class="is-active" data-tier-button="auto">
+          <span>Auto</span>
+          <small>Match sensor count</small>
+        </button>
+        <button type="button" data-tier-button="tier1">
+          <span>Tier 1</span>
+          <small>1-4 sensors</small>
+        </button>
+        <button type="button" data-tier-button="tier2">
+          <span>Tier 2</span>
+          <small>5-10 sensors</small>
+        </button>
+        <button type="button" data-tier-button="tier3">
+          <span>Tier 3</span>
+          <small>11-19 sensors</small>
+        </button>
+        <button type="button" data-tier-button="tier4">
+          <span>Tier 4</span>
+          <small>20+ sensors</small>
+        </button>
+      </div>
       <div class="tier-indicator" data-tier-indicator></div>
       <label class="vat-toggle">
         <input type="checkbox" id="vat-toggle" checked>
@@ -351,6 +419,10 @@
 
       const BOOKING_URL = 'https://example.com/book';
       const VAT_RATE = 0.2;
+      const MAX_SENSORS = 200;
+      const MAX_DOCKERS = 450;
+      const DOCKERS_PER_SENSOR = 2.5;
+
       const products = [
         { id: 'sensor', name: 'Sensor (standard variants)', unitLabel: 'Per sensor' },
         { id: 'docker', name: 'Sensor Docker', unitLabel: 'Per docking station' },
@@ -358,12 +430,14 @@
       ];
 
       const tiers = [
-        { id: 'tier1', name: 'Tier 1 (1-3 sensors)', min: 1, max: 3, prices: { sensor: 1295, docker: 379, software: 439 } },
-        { id: 'tier2', name: 'Tier 2 (4-9 sensors)', min: 4, max: 9, prices: { sensor: 1245, docker: 359, software: 419 } },
-        { id: 'tier3', name: 'Tier 3 (10+ sensors)', min: 10, max: Infinity, prices: { sensor: 1095, docker: 339, software: 399 } }
+        { id: 'tier1', label: 'Tier 1', range: '1-4 sensors', min: 1, max: 4, prices: { sensor: 1365, docker: 419, software: 475 } },
+        { id: 'tier2', label: 'Tier 2', range: '5-10 sensors', min: 5, max: 10, prices: { sensor: 1295, docker: 379, software: 439 } },
+        { id: 'tier3', label: 'Tier 3', range: '11-19 sensors', min: 11, max: 19, prices: { sensor: 1245, docker: 359, software: 419 } },
+        { id: 'tier4', label: 'Tier 4', range: '20+ sensors', min: 20, max: Infinity, prices: { sensor: 1095, docker: 339, software: 399 } }
       ];
 
       const state = { sensor: 0, docker: 0, software: 0 };
+      let selectedTierId = 'auto';
 
       const productCards = root.querySelectorAll('.product-card');
       const summaryLinesContainer = root.querySelector('#summary-lines');
@@ -375,6 +449,12 @@
       const vatToggle = root.querySelector('#vat-toggle');
       const bookingLink = root.querySelector('[data-booking-link]');
       const emailLink = root.querySelector('[data-email-link]');
+      const tierSelector = root.querySelector('[data-tier-selector]');
+      const tierButtons = tierSelector ? Array.from(tierSelector.querySelectorAll('[data-tier-button]')) : [];
+      const dockerHelper = root.querySelector('[data-docker-helper]');
+
+      let dockerInput = null;
+      let softwareInput = null;
 
       function money(value) {
         return new Intl.NumberFormat('en-GB', {
@@ -384,11 +464,64 @@
         }).format(value);
       }
 
-      function currentTier(totalSensors) {
-        if (totalSensors === 0) {
+      function tierDisplayName(tier) {
+        return `${tier.label} (${tier.range})`;
+      }
+
+      function findTierById(id) {
+        return tiers.find(tier => tier.id === id);
+      }
+
+      function tierForSensorCount(totalSensors) {
+        if (totalSensors <= 0) {
           return tiers[0];
         }
         return tiers.find(tier => totalSensors >= tier.min && totalSensors <= tier.max) || tiers[tiers.length - 1];
+      }
+
+      function resolveTier(totalSensors) {
+        if (selectedTierId === 'auto') {
+          return tierForSensorCount(totalSensors);
+        }
+        return findTierById(selectedTierId) || tierForSensorCount(totalSensors);
+      }
+
+      function clampQuantity(value, max) {
+        const numeric = Number(value);
+        if (!Number.isFinite(numeric) || numeric < 0) {
+          return 0;
+        }
+        return Math.min(Math.round(numeric), max);
+      }
+
+      function recommendedDockersFor(sensorCount) {
+        if (sensorCount <= 0) {
+          return 0;
+        }
+        return Math.min(MAX_DOCKERS, Math.ceil(sensorCount * DOCKERS_PER_SENSOR));
+      }
+
+      function updateDockerHelperText(recommended) {
+        if (!dockerHelper) return;
+        if (state.sensor <= 0) {
+          dockerHelper.textContent = 'Recommended: 0 docking stations';
+          return;
+        }
+        const suffix = recommended === 1 ? '' : 's';
+        dockerHelper.innerHTML = `Recommended: <strong>${recommended}</strong> docking station${suffix} (1 sensor : 2.5 docking stations)`;
+      }
+
+      function handleSensorDependencies() {
+        const recommended = recommendedDockersFor(state.sensor);
+        if (dockerInput) {
+          state.docker = Math.min(Math.max(recommended, state.sensor), MAX_DOCKERS);
+          dockerInput.value = state.docker;
+        }
+        if (softwareInput) {
+          state.software = state.sensor;
+          softwareInput.value = state.software;
+        }
+        updateDockerHelperText(recommended);
       }
 
       function getUnitPrice(productId, tier) {
@@ -418,15 +551,29 @@
         });
       }
 
+      function syncTierButtons(tier) {
+        tierButtons.forEach(button => {
+          const target = button.getAttribute('data-tier-button');
+          const isActive = selectedTierId === 'auto' ? target === 'auto' : target === selectedTierId;
+          button.classList.toggle('is-active', isActive);
+        });
+        if (tierIndicator) {
+          const prefix = selectedTierId === 'auto' ? 'Auto-selected tier' : 'Selected tier';
+          tierIndicator.textContent = `${prefix}: ${tierDisplayName(tier)}`;
+        }
+      }
+
       function updatePricing() {
         const totalSensors = state.sensor;
-        const tier = currentTier(totalSensors);
-        tierIndicator.textContent = tier.name;
+        const tier = resolveTier(totalSensors);
+        syncTierButtons(tier);
 
         productCards.forEach(card => {
           const productId = card.getAttribute('data-product-id');
           const display = card.querySelector('[data-price-display]');
-          display.textContent = money(getUnitPrice(productId, tier));
+          if (display) {
+            display.textContent = money(getUnitPrice(productId, tier));
+          }
         });
 
         updateSummary(tier);
@@ -456,7 +603,7 @@
 
         const emailSubject = encodeURIComponent('Cogvis AI – Quick Price Estimate');
         const bodyLines = [
-          `Tier: ${tier.name}`,
+          `Tier: ${tierDisplayName(tier)}`,
           `VAT included: ${vatIncluded ? 'Yes' : 'No'}`,
           '',
           ...products.map(product => {
@@ -476,12 +623,20 @@
         emailLink.href = `mailto:?subject=${emailSubject}&body=${emailBody}`;
       }
 
-      function clamp(value) {
-        const numeric = Number(value);
-        if (!Number.isFinite(numeric) || numeric < 0) {
-          return 0;
-        }
-        return Math.round(numeric);
+      if (tierButtons.length) {
+        tierButtons.forEach(button => {
+          button.addEventListener('click', () => {
+            const target = button.getAttribute('data-tier-button');
+            if (target === 'auto') {
+              selectedTierId = 'auto';
+            } else if (findTierById(target)) {
+              selectedTierId = target;
+            } else {
+              selectedTierId = 'auto';
+            }
+            updatePricing();
+          });
+        });
       }
 
       productCards.forEach(card => {
@@ -489,34 +644,76 @@
         const input = card.querySelector('input[type="number"]');
         const decrement = card.querySelector('.decrement');
         const increment = card.querySelector('.increment');
+        if (!input || !decrement || !increment) {
+          return;
+        }
 
-        const sync = () => {
-          state[productId] = clamp(input.value);
-          input.value = state[productId];
-          updatePricing();
-        };
+        if (productId === 'docker') {
+          dockerInput = input;
+        } else if (productId === 'software') {
+          softwareInput = input;
+          input.readOnly = true;
+          input.setAttribute('aria-readonly', 'true');
+          decrement.disabled = true;
+          increment.disabled = true;
+        }
 
-        decrement.addEventListener('click', () => {
-          input.value = clamp(Number(input.value) - 1);
-          sync();
-        });
-
-        increment.addEventListener('click', () => {
-          input.value = clamp(Number(input.value) + 1);
-          sync();
-        });
-
-        input.addEventListener('change', sync);
-        input.addEventListener('input', () => {
+        const filterNumericInput = () => {
           const cleaned = input.value.replace(/[^0-9]/g, '');
           if (cleaned !== input.value) {
             input.value = cleaned;
           }
-        });
+        };
+
+        if (productId === 'sensor') {
+          const sync = () => {
+            state.sensor = clampQuantity(input.value, MAX_SENSORS);
+            input.value = state.sensor;
+            handleSensorDependencies();
+            updatePricing();
+          };
+
+          decrement.addEventListener('click', () => {
+            input.value = clampQuantity(Number(input.value) - 1, MAX_SENSORS);
+            sync();
+          });
+
+          increment.addEventListener('click', () => {
+            input.value = clampQuantity(Number(input.value) + 1, MAX_SENSORS);
+            sync();
+          });
+
+          input.addEventListener('change', sync);
+          input.addEventListener('input', filterNumericInput);
+        } else if (productId === 'docker') {
+          const sync = () => {
+            const clamped = clampQuantity(input.value, MAX_DOCKERS);
+            state.docker = Math.min(Math.max(clamped, state.sensor), MAX_DOCKERS);
+            input.value = state.docker;
+            updateDockerHelperText(recommendedDockersFor(state.sensor));
+            updatePricing();
+          };
+
+          decrement.addEventListener('click', () => {
+            input.value = clampQuantity(Number(input.value) - 1, MAX_DOCKERS);
+            sync();
+          });
+
+          increment.addEventListener('click', () => {
+            input.value = clampQuantity(Number(input.value) + 1, MAX_DOCKERS);
+            sync();
+          });
+
+          input.addEventListener('change', sync);
+          input.addEventListener('input', filterNumericInput);
+        } else if (productId === 'software') {
+          input.addEventListener('input', filterNumericInput);
+        }
       });
 
       vatToggle.addEventListener('change', updatePricing);
 
+      handleSensorDependencies();
       updatePricing();
     })();
   </script>
