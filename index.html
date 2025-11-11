@@ -188,6 +188,70 @@
       border: 1px solid var(--border);
       box-shadow: 0 12px 30px rgba(12, 35, 64, 0.08);
     }
+    #cogvis-estimator .financing-card {
+      border: 1px solid rgba(12, 35, 64, 0.12);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      background: var(--surface-alt);
+      display: grid;
+      gap: 12px;
+    }
+    #cogvis-estimator .financing-header {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    #cogvis-estimator .financing-label {
+      font-weight: 600;
+      color: var(--accent-strong);
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      font-size: 0.95rem;
+    }
+    #cogvis-estimator .financing-label span {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+    #cogvis-estimator .financing-monthly {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+    #cogvis-estimator .financing-slider {
+      width: 100%;
+      -webkit-appearance: none;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(12, 35, 64, 0.15);
+      outline: none;
+    }
+    #cogvis-estimator .financing-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--nhm-orange);
+      cursor: pointer;
+      box-shadow: 0 0 0 4px rgba(251, 176, 64, 0.2);
+    }
+    #cogvis-estimator .financing-slider::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--nhm-orange);
+      cursor: pointer;
+      border: none;
+      box-shadow: 0 0 0 4px rgba(251, 176, 64, 0.2);
+    }
+    #cogvis-estimator .financing-scale {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
     #cogvis-estimator .summary-card h2 {
       margin: 0;
       font-size: 1.2rem;
@@ -417,6 +481,31 @@
         <div class="label">Estimated total (excl. VAT)</div>
         <strong></strong>
       </div>
+      <div class="financing-card" aria-live="polite">
+        <div class="financing-header">
+          <div class="financing-label">
+            <span>Financing term</span>
+            <div>Pay over <strong data-months-display>12</strong> months</div>
+          </div>
+          <div class="financing-monthly">
+            Estimated monthly payment: <strong data-monthly-amount>£0.00</strong>
+          </div>
+        </div>
+        <input
+          type="range"
+          class="financing-slider"
+          min="12"
+          max="36"
+          value="12"
+          step="1"
+          aria-label="Select financing term in months"
+          data-months-input
+        />
+        <div class="financing-scale" aria-hidden="true">
+          <span>12 months</span>
+          <span>36 months</span>
+        </div>
+      </div>
       <div class="actions">
         <a class="primary" data-booking-link href="#">Book a site survey</a>
         <a class="secondary" data-email-link href="#">Email me this estimate</a>
@@ -462,10 +551,14 @@
       const tierSelector = root.querySelector('[data-tier-selector]');
       const tierButtons = tierSelector ? Array.from(tierSelector.querySelectorAll('[data-tier-button]')) : [];
       const dockerHelper = root.querySelector('[data-docker-helper]');
+      const monthsInput = root.querySelector('[data-months-input]');
+      const monthsDisplay = root.querySelector('[data-months-display]');
+      const monthlyAmountEl = root.querySelector('[data-monthly-amount]');
 
       let sensorInput = null;
       let dockerInput = null;
       let softwareInput = null;
+      let lastTotal = 0;
 
       function money(value) {
         return new Intl.NumberFormat('en-GB', {
@@ -503,6 +596,14 @@
           return 0;
         }
         return Math.min(Math.round(numeric), max);
+      }
+
+      function clampMonths(value) {
+        const numeric = Number(value);
+        if (!Number.isFinite(numeric)) {
+          return 12;
+        }
+        return Math.min(Math.max(Math.round(numeric), 12), 36);
       }
 
       function recommendedDockersFor(sensorCount) {
@@ -588,6 +689,17 @@
         }
       }
 
+      function updateMonthlyPayment(total) {
+        if (!monthsInput || !monthsDisplay || !monthlyAmountEl) {
+          return;
+        }
+        const months = clampMonths(monthsInput.value);
+        monthsInput.value = months;
+        monthsDisplay.textContent = months;
+        const monthly = months > 0 ? total / months : 0;
+        monthlyAmountEl.textContent = money(monthly);
+      }
+
       function updatePricing() {
         const totalSensors = state.sensor;
         const tier = resolveTier(totalSensors);
@@ -612,6 +724,8 @@
 
         subtotalEl.textContent = money(subtotal);
         totalEl.textContent = money(total);
+        lastTotal = total;
+        updateMonthlyPayment(total);
 
         const itemsParam = `sensor:${state.sensor},docker:${state.docker},software:${state.software}`;
         bookingLink.href = `${BOOKING_URL}?items=${encodeURIComponent(itemsParam)}`;
@@ -729,6 +843,16 @@
 
       handleSensorDependencies();
       updatePricing();
+
+      if (monthsInput) {
+        const handleMonthsChange = () => {
+          lastTotal = lastTotal || 0;
+          updateMonthlyPayment(lastTotal);
+        };
+        monthsInput.addEventListener('input', handleMonthsChange);
+        monthsInput.addEventListener('change', handleMonthsChange);
+        updateMonthlyPayment(lastTotal);
+      }
     })();
   </script>
 </div>
