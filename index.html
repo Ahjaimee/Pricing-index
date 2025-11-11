@@ -450,10 +450,6 @@
     <div class="summary-card">
       <h2>Quick Price Estimator</h2>
       <div class="tier-selector" data-tier-selector role="group" aria-label="Pricing tier selection">
-        <button type="button" class="is-active" data-tier-button="auto">
-          <span>Auto</span>
-          <small>Match sensor count</small>
-        </button>
         <button type="button" data-tier-button="tier1">
           <span>Tier 1</span>
           <small>1-4 sensors</small>
@@ -535,11 +531,11 @@
         { id: 'tier1', label: 'Tier 1', range: '1-4 sensors', min: 1, max: 4, prices: { sensor: 1365, docker: 419, software: 475 } },
         { id: 'tier2', label: 'Tier 2', range: '5-10 sensors', min: 5, max: 10, prices: { sensor: 1295, docker: 379, software: 439 } },
         { id: 'tier3', label: 'Tier 3', range: '11-19 sensors', min: 11, max: 19, prices: { sensor: 1245, docker: 359, software: 419 } },
-        { id: 'tier4', label: 'Tier 4', range: '20+ sensors', min: 20, max: Infinity, prices: { sensor: 1095, docker: 339, software: 399 } }
+        { id: 'tier4', label: 'Tier 4', range: '20+ sensors', min: 20, max: Infinity, prices: { sensor: 1195, docker: 339, software: 399 } }
       ];
 
-      const state = { sensor: 0, docker: 0, software: 0 };
-      let selectedTierId = 'auto';
+      const state = { sensor: tiers[0].min, docker: 0, software: 0 };
+      let selectedTierId = tiers[0].id;
 
       const productCards = root.querySelectorAll('.product-card');
       const summaryLinesContainer = root.querySelector('#summary-lines');
@@ -584,9 +580,6 @@
       }
 
       function resolveTier(totalSensors) {
-        if (selectedTierId === 'auto') {
-          return tierForSensorCount(totalSensors);
-        }
         return findTierById(selectedTierId) || tierForSensorCount(totalSensors);
       }
 
@@ -639,8 +632,7 @@
       function adjustSensorsForTier(tier) {
         if (!tier) return;
         const maxForTier = Number.isFinite(tier.max) ? tier.max : MAX_SENSORS;
-        const base = state.sensor || tier.min;
-        const adjusted = Math.min(Math.max(base, tier.min), maxForTier);
+        const adjusted = Math.min(Math.max(tier.min, 0), maxForTier);
         if (adjusted !== state.sensor) {
           state.sensor = adjusted;
           if (sensorInput) {
@@ -680,12 +672,10 @@
       function syncTierButtons(tier) {
         tierButtons.forEach(button => {
           const target = button.getAttribute('data-tier-button');
-          const isActive = selectedTierId === 'auto' ? target === 'auto' : target === selectedTierId;
-          button.classList.toggle('is-active', isActive);
+          button.classList.toggle('is-active', tier ? target === tier.id : false);
         });
-        if (tierIndicator) {
-          const prefix = selectedTierId === 'auto' ? 'Auto-selected tier' : 'Selected tier';
-          tierIndicator.textContent = `${prefix}: ${tierDisplayName(tier)}`;
+        if (tierIndicator && tier) {
+          tierIndicator.textContent = `Selected tier: ${tierDisplayName(tier)}`;
         }
       }
 
@@ -752,17 +742,12 @@
         tierButtons.forEach(button => {
           button.addEventListener('click', () => {
             const target = button.getAttribute('data-tier-button');
-            if (target === 'auto') {
-              selectedTierId = 'auto';
-            } else {
-              const tier = findTierById(target);
-              if (tier) {
-                selectedTierId = target;
-                adjustSensorsForTier(tier);
-              } else {
-                selectedTierId = 'auto';
-              }
+            const tier = findTierById(target);
+            if (!tier) {
+              return;
             }
+            selectedTierId = tier.id;
+            adjustSensorsForTier(tier);
             updatePricing();
           });
         });
@@ -796,10 +781,15 @@
 
         if (productId === 'sensor') {
           sensorInput = input;
+          input.value = state.sensor;
           const sync = () => {
             state.sensor = clampQuantity(input.value, MAX_SENSORS);
             input.value = state.sensor;
             handleSensorDependencies();
+            const tier = tierForSensorCount(state.sensor);
+            if (tier) {
+              selectedTierId = tier.id;
+            }
             updatePricing();
           };
 
