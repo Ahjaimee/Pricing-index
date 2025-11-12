@@ -1,10 +1,12 @@
 (function () {
-  const sensorImage = document.querySelector('[data-sensor-image]');
-  if (!sensorImage) {
+  const sensorImages = document.querySelectorAll('[data-sensor-image]');
+  if (!sensorImages.length) {
     return;
   }
 
-  sensorImage.src = 'Picture6.png';
-  sensorImage.decoding = 'async';
-  sensorImage.loading = 'lazy';
+  sensorImages.forEach((image) => {
+    image.src = 'Picture6.png';
+    image.decoding = 'async';
+    image.loading = 'lazy';
+  });
 })();
