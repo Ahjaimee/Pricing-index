@@ -104,6 +104,9 @@
       font-size: 1.05rem;
       font-weight: 600;
       color: var(--text-accent);
+      min-width: 120px;
+      display: inline-flex;
+      justify-content: flex-end;
     }
     #cogvis-estimator .stepper {
       display: inline-flex;
@@ -223,6 +226,15 @@
     #cogvis-estimator .summary-line strong {
       font-weight: 600;
       white-space: nowrap;
+      flex: 0 0 140px;
+      text-align: right;
+    }
+    #cogvis-estimator .price-display,
+    #cogvis-estimator .summary-line strong,
+    #cogvis-estimator .summary-line .label span,
+    #cogvis-estimator .financing-monthly strong {
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: 'tnum' 1;
     }
     #cogvis-estimator .total-line {
       border-top: 1px solid var(--border);
@@ -309,6 +321,12 @@
       #cogvis-estimator .summary-card {
         position: sticky;
         top: 16px;
+      }
+      #cogvis-estimator .price-display {
+        min-width: 100px;
+      }
+      #cogvis-estimator .summary-line strong {
+        flex: 0 0 120px;
       }
     }
   </style>
