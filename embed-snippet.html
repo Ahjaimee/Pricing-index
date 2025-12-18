@@ -335,7 +335,7 @@
   <div class="estimator-layout">
     <div class="products">
       <div class="product-card" data-product-id="sensor">
-        <img data-sensor-image src="Picture6.png" alt="Cogvis fall detection sensor" loading="lazy" decoding="async">
+        <img data-sensor-image src="Cogvis fall detection sensor.png" alt="Cogvis fall detection sensor" loading="lazy" decoding="async">
         <div class="product-content">
           <div class="product-header">
             <div class="product-name">Sensor (standard variants)</div>
@@ -350,7 +350,7 @@
         </div>
       </div>
       <div class="product-card" data-product-id="docker">
-        <img src="Picture7.png" alt="Cogvis sensor docking station" loading="lazy" decoding="async">
+        <img src="Cogvis sensor docking station.png" alt="Cogvis sensor docking station" loading="lazy" decoding="async">
         <div class="product-content">
           <div class="product-header">
             <div class="product-name">Sensor Docker</div>
@@ -366,7 +366,7 @@
         </div>
       </div>
       <div class="product-card" data-product-id="software">
-        <img src="cogvis-1.png" alt="Cogvis AI software licence">
+        <img src="Cogvis AI software license.png" alt="Cogvis AI software license">
         <div class="product-content">
           <div class="product-header">
             <div class="product-name">Nursing Home Software (1 Year)</div>
@@ -430,7 +430,7 @@
     (function () {
       // Ensure Webflow assets use the expected filenames
       document.querySelectorAll('[data-sensor-image]').forEach(img => {
-        img.src = 'Picture6.png';
+        img.src = 'Cogvis fall detection sensor.png';
       });
 
       const script = document.currentScript;
@@ -458,6 +458,7 @@
 
       const state = { sensor: tiers[0].min, docker: 0, software: 0 };
       let selectedTierId = tiers[0].id;
+      let dockerManuallyAdjusted = false;
 
       const productCards = root.querySelectorAll('.product-card');
       const summaryLinesContainer = root.querySelector('#summary-lines');
@@ -526,13 +527,20 @@
           return;
         }
         const suffix = recommended === 1 ? '' : 's';
-        dockerHelper.innerHTML = `Recommended: <strong>${recommended}</strong> docking station${suffix} (1 sensor : 2.5 docking stations)`;
+        const ratioDisplay = Number.isInteger(DOCKERS_PER_SENSOR) ? DOCKERS_PER_SENSOR : DOCKERS_PER_SENSOR.toFixed(1);
+        const recommendation = `<strong>${recommended}</strong> docking station${suffix} (1 sensor : ${ratioDisplay} docking stations)`;
+        const mode = dockerManuallyAdjusted ? 'Manual value in use.' : 'Auto-adjusted with sensor changes.';
+        dockerHelper.innerHTML = `Recommended: ${recommendation} ${mode}`;
       }
 
       function handleSensorDependencies() {
         const recommended = recommendedDockersFor(state.sensor);
         if (dockerInput) {
-          state.docker = Math.min(Math.max(recommended, state.sensor), MAX_DOCKERS);
+          if (dockerManuallyAdjusted) {
+            state.docker = clampQuantity(dockerInput.value, MAX_DOCKERS);
+          } else {
+            state.docker = Math.min(Math.max(recommended, state.sensor), MAX_DOCKERS);
+          }
           dockerInput.value = state.docker;
         }
         if (softwareInput) {
@@ -720,9 +728,12 @@
           input.addEventListener('change', sync);
           input.addEventListener('input', filterNumericInput);
         } else if (productId === 'docker') {
-          const sync = () => {
+          const sync = (markManual = false) => {
+            if (markManual) {
+              dockerManuallyAdjusted = true;
+            }
             const clamped = clampQuantity(input.value, MAX_DOCKERS);
-            state.docker = Math.min(Math.max(clamped, state.sensor), MAX_DOCKERS);
+            state.docker = clamped;
             input.value = state.docker;
             updateDockerHelperText(recommendedDockersFor(state.sensor));
             updatePricing();
@@ -730,16 +741,19 @@
 
           decrement.addEventListener('click', () => {
             input.value = clampQuantity(Number(input.value) - 1, MAX_DOCKERS);
-            sync();
+            sync(true);
           });
 
           increment.addEventListener('click', () => {
             input.value = clampQuantity(Number(input.value) + 1, MAX_DOCKERS);
-            sync();
+            sync(true);
           });
 
-          input.addEventListener('change', sync);
-          input.addEventListener('input', filterNumericInput);
+          input.addEventListener('change', () => sync(true));
+          input.addEventListener('input', () => {
+            dockerManuallyAdjusted = true;
+            filterNumericInput();
+          });
         } else if (productId === 'software') {
           input.addEventListener('input', filterNumericInput);
         }

@@ -5,7 +5,7 @@
   }
 
   sensorImages.forEach((image) => {
-    image.src = 'Picture6.png';
+    image.src = 'Cogvis fall detection sensor.png';
     image.decoding = 'async';
     image.loading = 'lazy';
   });
