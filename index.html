@@ -379,14 +379,6 @@
       font-size: 0.85rem;
       color: var(--text-secondary);
     }
-    #cogvis-estimator .product-helper {
-      font-size: 0.78rem;
-      color: rgba(12, 35, 64, 0.75);
-    }
-    #cogvis-estimator .product-helper strong {
-      font-weight: 600;
-      color: var(--accent-strong);
-    }
     #cogvis-estimator .stepper button:disabled {
       opacity: 0.4;
       cursor: not-allowed;
@@ -456,7 +448,6 @@
             <input type="number" inputmode="numeric" min="0" step="1" value="0" aria-label="Sensor Docker quantity input">
             <button type="button" class="increment" aria-label="Increase Sensor Docker quantity">+</button>
           </div>
-          <div class="product-helper" data-docker-helper>Recommended: 0 docking stations</div>
         </div>
       </div>
       <div class="product-card" data-product-id="software">
@@ -576,7 +567,6 @@
       const emailLink = root.querySelector('[data-email-link]');
       const tierSelector = root.querySelector('[data-tier-selector]');
       const tierButtons = tierSelector ? Array.from(tierSelector.querySelectorAll('[data-tier-button]')) : [];
-      const dockerHelper = root.querySelector('[data-docker-helper]');
       const monthsInput = root.querySelector('[data-months-input]');
       const monthsDisplay = root.querySelector('[data-months-display]');
       const monthlyAmountEl = root.querySelector('[data-monthly-amount]');
@@ -636,19 +626,6 @@
         return Math.min(MAX_DOCKERS, Math.ceil(sensorCount * DOCKERS_PER_SENSOR));
       }
 
-      function updateDockerHelperText(recommended) {
-        if (!dockerHelper) return;
-        if (state.sensor <= 0) {
-          dockerHelper.textContent = 'Recommended: 0 docking stations';
-          return;
-        }
-        const suffix = recommended === 1 ? '' : 's';
-        const ratioDisplay = Number.isInteger(DOCKERS_PER_SENSOR) ? DOCKERS_PER_SENSOR : DOCKERS_PER_SENSOR.toFixed(1);
-        const recommendation = `<strong>${recommended}</strong> docking station${suffix} (1 sensor : ${ratioDisplay} docking station${DOCKERS_PER_SENSOR === 1 ? '' : 's'})`;
-        const mode = dockerManuallyAdjusted ? 'Manual value in use.' : 'Auto-adjusted with sensor changes.';
-        dockerHelper.innerHTML = `Recommended: ${recommendation} ${mode}`;
-      }
-
       function handleSensorDependencies() {
         const recommended = recommendedDockersFor(state.sensor);
         if (dockerInput) {
@@ -663,7 +640,6 @@
           state.software = state.sensor;
           softwareInput.value = state.software;
         }
-        updateDockerHelperText(recommended);
       }
 
       function adjustSensorsForTier(tier) {
@@ -833,7 +809,6 @@
             const clamped = clampQuantity(input.value, MAX_DOCKERS);
             state.docker = clamped;
             input.value = state.docker;
-            updateDockerHelperText(recommendedDockersFor(state.sensor));
             updatePricing();
           };
 
